@@ -1,0 +1,37 @@
+"use client";
+
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowDownRight, ArrowRight } from "lucide-react";
+import { useRef } from "react";
+import type { Item } from "@/lib/types";
+import { ProductCard } from "@/components/product-card";
+
+gsap.registerPlugin(ScrollTrigger, useGSAP);
+
+export function HomeExperience({ items }: { items: Item[] }) {
+  const scope = useRef<HTMLElement>(null);
+  useGSAP(() => {
+    gsap.from(".hero-copy > *", { y: 35, opacity: 0, duration: .9, stagger: .08, ease: "power3.out" });
+    gsap.utils.toArray<HTMLElement>(".reveal-image").forEach((image) => gsap.fromTo(image, { scale: .86, opacity: .45 }, { scale: 1, opacity: 1, ease: "none", scrollTrigger: { trigger: image, start: "top 90%", end: "center 45%", scrub: true } }));
+    gsap.utils.toArray<HTMLElement>(".stack-card").forEach((card, index) => gsap.to(card, { y: index * -12, scrollTrigger: { trigger: card, start: "top 70%", end: "bottom 35%", scrub: true } }));
+  }, { scope });
+
+  return <main ref={scope} className="w-full max-w-full overflow-x-hidden">
+    <section className="mx-auto grid min-h-[calc(100svh-4rem)] max-w-[1600px] grid-cols-1 border-x hairline lg:grid-cols-2">
+      <div className="hero-copy flex flex-col justify-between px-5 py-12 md:px-10 md:py-16 lg:py-20"><p className="eyebrow">Independent resale · Manila</p><div><h1 className="display max-w-5xl text-[clamp(3.6rem,7vw,7.8rem)]">Second lives.<br/>First choice.</h1><p className="mt-7 max-w-md text-base leading-7 opacity-65">One-off garments and objects, inspected by hand and selected for what they still have to say.</p><div className="mt-9 flex gap-3"><Link href="/shop" className="flex items-center gap-8 bg-[var(--ink)] px-5 py-4 text-sm text-white">Shop the latest <ArrowRight size={17}/></Link><Link href="#manifesto" className="grid size-13 place-items-center border hairline" aria-label="Read more"><ArrowDownRight/></Link></div></div><p className="mt-12 max-w-xs text-xs leading-5 opacity-55">No restocks. No quantity selectors. When a piece is gone, it stays gone.</p></div>
+      <div className="relative min-h-[60vh] overflow-hidden bg-[#d4d1c7]"><Image src={items[0]?.images[0]} alt={items[0]?.title ?? "Vintage leather jacket"} fill priority className="object-cover grayscale-[15%] contrast-[1.04]" /><div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"/><Link href={`/item/${items[0]?.slug}`} className="absolute bottom-5 left-5 right-5 flex items-end justify-between text-white"><div><p className="eyebrow">Just landed</p><p className="mt-2 text-2xl font-semibold">{items[0]?.title}</p></div><span className="grid size-12 place-items-center rounded-full bg-[var(--acid)] text-black"><ArrowRight/></span></Link></div>
+    </section>
+    <div className="overflow-hidden border-y hairline py-4"><div className="marquee-track flex w-max gap-10 pr-10 text-sm font-semibold uppercase tracking-[.2em]">{[0,1].map((n) => <div key={n} className="flex gap-10"><span>One item</span><span>One owner</span><span>One next chapter</span><span>Inspected in Manila</span><span>Shipping nationwide</span></div>)}</div></div>
+    <section className="mx-auto max-w-[1600px] px-5 py-28 md:px-8 md:py-44"><div className="mb-12 flex items-end justify-between"><div><p className="eyebrow">Freshly sourced</p><h2 className="display mt-4 text-[clamp(3rem,6vw,6rem)]">The new edit</h2></div><Link href="/shop" className="hidden items-center gap-2 border-b border-black pb-1 text-sm md:flex">View everything <ArrowRight size={15}/></Link></div><div className="grid grid-cols-2 gap-x-3 gap-y-12 md:grid-cols-4 md:gap-x-5">{items.slice(0,4).map((item, index) => <div className="reveal-image" key={item.id}><ProductCard item={item} priority={index < 2}/></div>)}</div></section>
+    <section id="manifesto" className="bg-[var(--ink)] px-5 py-28 text-white md:px-8 md:py-48"><div className="mx-auto grid max-w-[1500px] grid-flow-dense grid-cols-1 gap-px bg-white/15 md:grid-cols-12"><div className="stack-card relative min-h-[520px] overflow-hidden bg-[#242620] p-7 md:col-span-7"><Image src="https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=1600&q=85" alt="Curated clothing rail" fill className="object-cover opacity-70 transition duration-700 hover:scale-105"/><div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"/><h2 className="display absolute bottom-7 left-7 max-w-2xl text-[clamp(3rem,6vw,6rem)]">Less new.<br/>More you.</h2></div><div className="stack-card flex min-h-[520px] flex-col justify-between bg-[var(--acid)] p-7 text-black md:col-span-5"><p className="eyebrow">Our point of view</p><p className="text-[clamp(1.8rem,3vw,3.5rem)] font-medium leading-[1.05] tracking-[-.05em]">The best wardrobe is assembled over time, not delivered in a box overnight.</p><Link href="/shop" className="flex items-center justify-between border-t border-black/30 pt-5">Find your one <ArrowRight/></Link></div><CategoryCard title="Outerwear" image="https://images.unsplash.com/photo-1544022613-e87ca75a784a?auto=format&fit=crop&w=1000&q=85" href="/shop?category=Jackets"/><CategoryCard title="Everyday" image="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1000&q=85" href="/shop?category=Shirts"/><CategoryCard title="Objects" image="https://images.unsplash.com/photo-1523779917675-b6ed3a42a561?auto=format&fit=crop&w=1000&q=85" href="/shop?category=Accessories"/></div></section>
+    <section className="px-5 py-28 text-center md:py-48"><p className="eyebrow">Nothing mass-produced</p><h2 className="display mx-auto mt-5 max-w-5xl text-[clamp(3.5rem,8vw,8rem)]">Find it before<br/>someone else does.</h2><Link href="/shop" className="mt-10 inline-flex items-center gap-12 bg-[var(--ink)] px-6 py-4 text-white">Shop all one-offs <ArrowRight/></Link></section>
+    <Footer />
+  </main>;
+}
+
+function CategoryCard({ title, image, href }: { title: string; image: string; href: string }) { return <Link href={href} className="group relative min-h-80 overflow-hidden bg-[#30322c] md:col-span-4"><Image src={image} alt="" fill className="object-cover opacity-70 transition duration-700 group-hover:scale-105"/><div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"/><span className="absolute bottom-5 left-5 text-2xl font-semibold">{title}</span><ArrowRight className="absolute bottom-5 right-5"/></Link>; }
+function Footer() { return <footer className="border-t hairline px-5 py-10 md:px-8"><div className="mx-auto grid max-w-[1500px] gap-10 md:grid-cols-3"><div><p className="text-4xl font-black tracking-[-.08em]">REGEAR</p><p className="mt-3 max-w-xs text-sm opacity-60">One-off pieces for longer wardrobes.</p></div><div className="grid grid-cols-2 gap-4 text-sm"><Link href="/shop">Shop</Link><Link href="/account">Account</Link><Link href="/orders">Orders</Link><Link href="/favorites">Saved</Link></div><div className="md:text-right"><p className="text-sm">Manila, Philippines</p><p className="mt-2 text-xs opacity-50">© 2026 REGEAR</p></div></div></footer>; }

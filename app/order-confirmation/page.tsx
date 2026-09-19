@@ -1,0 +1,3 @@
+import Link from "next/link";
+import { Check } from "lucide-react";
+export default function ConfirmationPage(){return <main className="grid min-h-[80vh] place-items-center px-5 text-center"><div><div className="mx-auto grid size-20 place-items-center rounded-full bg-[var(--acid)]"><Check size={32}/></div><h1 className="display mt-7 text-6xl md:text-8xl">It’s yours.</h1><p className="mx-auto mt-5 max-w-md opacity-60">Payment received. We’ll email your receipt and tracking details as soon as your piece is packed.</p><Link href="/shop" className="mt-8 inline-block border-b border-black pb-1">Keep browsing</Link></div></main>}

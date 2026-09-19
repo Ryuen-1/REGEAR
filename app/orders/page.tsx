@@ -1,0 +1,7 @@
+import Image from "next/image";
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { hasSupabaseEnv } from "@/lib/supabase/env";
+import { formatPrice } from "@/lib/demo-data";
+import type { Order } from "@/lib/types";
+export default async function OrdersPage(){if(!hasSupabaseEnv)redirect("/account");const supabase=await createClient();const {data:{user}}=await supabase.auth.getUser();if(!user)redirect("/account");const {data}=await supabase.from("orders").select("*,items(title,images,slug)").order("created_at",{ascending:false});const orders=(data??[]) as Order[];return <main className="mx-auto min-h-[80vh] max-w-5xl px-5 py-16"><p className="eyebrow">Purchase archive</p><h1 className="display mt-4 text-7xl">Your orders</h1>{orders.length?<div className="mt-10 divide-y hairline">{orders.map(order=><article key={order.id} className="flex gap-5 py-6">{order.items?.images?.[0]&&<div className="relative h-32 w-24 overflow-hidden"><Image src={order.items.images[0]} alt="" fill className="object-cover"/></div>}<div className="flex flex-1 justify-between"><div><p className="font-semibold">{order.items?.title??"REGEAR item"}</p><p className="mt-2 text-xs uppercase tracking-wider opacity-50">{order.payment_status} · {new Date(order.created_at).toLocaleDateString()}</p></div><p className="font-mono text-sm">{formatPrice(order.total_price)}</p></div></article>)}</div>:<p className="mt-16 opacity-55">No orders yet. Your future favorites are waiting.</p>}</main>}

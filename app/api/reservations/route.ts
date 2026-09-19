@@ -1,0 +1,8 @@
+import { NextResponse } from "next/server";
+import { z } from "zod";
+import { createAdminClient } from "@/lib/supabase/admin";
+
+const schema=z.object({itemId:z.string().uuid(),token:z.string().uuid()});
+const demoIds=new Set(["11111111-1111-4111-8111-111111111111","22222222-2222-4222-8222-222222222222","33333333-3333-4333-8333-333333333333","44444444-4444-4444-8444-444444444444","55555555-5555-4555-8555-555555555555","66666666-6666-4666-8666-666666666666"]);
+export async function POST(request:Request){try{const input=schema.parse(await request.json());const expiresAt=new Date(Date.now()+15*60_000).toISOString();if(!process.env.SUPABASE_SECRET_KEY&&demoIds.has(input.itemId))return NextResponse.json({expiresAt,demo:true});const supabase=createAdminClient();const {data,error}=await supabase.rpc("reserve_item",{target_item:input.itemId,guest_token:input.token}).single();if(error||!data)return NextResponse.json({error:"This piece is already being held."},{status:409});return NextResponse.json({expiresAt:data.reserved_until});}catch{return NextResponse.json({error:"Invalid reservation request."},{status:400})}}
+export async function DELETE(request:Request){try{const input=schema.parse(await request.json());if(!process.env.SUPABASE_SECRET_KEY&&demoIds.has(input.itemId))return NextResponse.json({released:true});const supabase=createAdminClient();const {data}=await supabase.rpc("release_item",{target_item:input.itemId,guest_token:input.token});return NextResponse.json({released:Boolean(data)});}catch{return NextResponse.json({error:"Invalid release request."},{status:400})}}
