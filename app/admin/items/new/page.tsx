@@ -1,2 +1,3 @@
 import { AdminItemForm } from "@/components/admin-item-form";
-export default function NewItemPage(){return <main className="mx-auto max-w-6xl px-5 py-16"><p className="eyebrow">Inventory</p><h1 className="display mt-4 text-7xl">Add a piece</h1><AdminItemForm/></main>}
+
+export default function NewItemPage(){return <main className="admin-page"><div className="admin-container"><header className="admin-page-header admin-reveal"><div className="admin-page-copy"><p className="eyebrow">Catalog manager</p><h1 className="display admin-page-title">Add product.</h1><p className="admin-page-subtitle">Create the product page customers will browse, save, add to cart, and buy.</p></div></header><AdminItemForm/></div></main>}

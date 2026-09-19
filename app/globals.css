@@ -23,5 +23,28 @@ button, a { -webkit-tap-highlight-color: transparent; }
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");
 }
 .marquee-track { animation: marquee 25s linear infinite; }
+.admin-world {
+  --admin-bg: #e9e7df;
+  --admin-surface: #f5f3ec;
+  --admin-muted: rgba(23,25,21,.56);
+  background: radial-gradient(circle at 88% 4%, rgba(217,255,67,.12), transparent 30rem), var(--admin-bg);
+}
+.admin-container { width: 100%; max-width: 1504px; margin-inline: auto; padding-inline: clamp(1.25rem, 3vw, 2.5rem); }
+.admin-page { min-height: 80vh; padding-block: clamp(4.5rem, 8vw, 7.5rem) 9rem; overflow-x: hidden; }
+.admin-page-header { display: flex; align-items: end; justify-content: space-between; gap: 2.5rem; padding-bottom: 3rem; border-bottom: 1px solid var(--line); }
+.admin-page-copy { max-width: 64rem; }
+.admin-page-title { max-width: 64rem; margin-top: 1rem; font-size: clamp(3.5rem, 7vw, 6.75rem); }
+.admin-page-subtitle { max-width: 38rem; margin-top: 1.5rem; color: var(--admin-muted); font-size: .925rem; line-height: 1.75; }
+.admin-section { margin-top: clamp(3rem, 6vw, 5.5rem); }
+.admin-panel { border: 1px solid rgba(23,25,21,.14); background: var(--admin-surface); }
+.admin-button { display: inline-flex; min-height: 3rem; align-items: center; justify-content: center; gap: .7rem; padding: .75rem 1.25rem; background: var(--ink); color: white; font-size: .825rem; font-weight: 650; transition: background .25s, color .25s, transform .25s; }
+.admin-button:hover { background: #30332c; transform: translateY(-2px); }
+.admin-button-secondary { display: inline-flex; min-height: 3rem; align-items: center; justify-content: center; gap: .7rem; padding: .75rem 1.25rem; border: 1px solid var(--line); background: var(--admin-surface); font-size: .825rem; font-weight: 650; transition: background .25s, transform .25s; }
+.admin-button-secondary:hover { background: white; transform: translateY(-2px); }
+.admin-field { min-height: 3rem; border: 1px solid rgba(23,25,21,.18); background: white; transition: border-color .25s, box-shadow .25s; }
+.admin-field:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px rgba(23,25,21,.06); }
+.admin-row { transition: background .25s, transform .25s; }
+.admin-row:hover { background: white; }
+@media (max-width: 767px) { .admin-page-header { align-items: start; flex-direction: column; } }
 @keyframes marquee { to { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; } html { scroll-behavior: auto; } }

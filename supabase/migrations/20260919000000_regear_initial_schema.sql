@@ -75,6 +75,20 @@ $$;
 revoke execute on function public.handle_new_user() from public, anon, authenticated;
 create trigger on_auth_user_created after insert on auth.users for each row execute function public.handle_new_user();
 
+-- Backfill users who signed up before this schema was deployed.
+insert into public.profiles (id, display_name)
+select id, coalesce(raw_user_meta_data ->> 'display_name', '')
+from auth.users
+on conflict (id) do nothing;
+
+-- REGEAR's owner account. Authorization remains in a server-controlled table,
+-- never in user-editable user_metadata.
+update public.profiles as profile
+set is_admin = true
+from auth.users as auth_user
+where profile.id = auth_user.id
+  and lower(auth_user.email) = 'ian.quimbo2004@gmail.com';
+
 create or replace function public.reserve_item(target_item uuid, guest_token uuid)
 returns public.items
 language plpgsql security invoker set search_path = '' as $$

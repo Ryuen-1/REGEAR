@@ -3,11 +3,17 @@
 import Link from "next/link";
 import { Heart, Menu, Search, ShoppingBag, UserRound, X } from "lucide-react";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { useCart } from "@/components/cart-provider";
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
   const { count, openCart } = useCart();
+  const isAdmin = pathname.startsWith("/admin");
+
+  if (isAdmin) return <header className="sticky top-0 z-40 border-b hairline bg-[rgba(242,240,233,.94)] backdrop-blur-xl"><div className="mx-auto grid h-16 max-w-[1600px] place-items-center px-4"><Link href="/admin" className="text-xl font-black tracking-[-.08em]">REGEAR</Link></div></header>;
+
   return (
     <header className="sticky top-0 z-40 border-b hairline bg-[rgba(242,240,233,.9)] backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-4 md:px-8">

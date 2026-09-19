@@ -1,0 +1,12 @@
+import Link from "next/link";
+import { ArrowUpRight, PackagePlus, Pencil } from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
+import { formatPrice } from "@/lib/demo-data";
+import { InventoryStatus } from "@/components/inventory-status";
+import type { ItemStatus } from "@/lib/types";
+
+export default async function AdminItemsPage() {
+  const supabase=await createClient();
+  const {data:items}=await supabase.from("items").select("id,title,slug,status,price,created_at").order("created_at",{ascending:false});
+  return <main className="admin-page"><div className="admin-container"><header className="admin-page-header admin-reveal"><div className="admin-page-copy"><p className="eyebrow">Customer storefront</p><h1 className="display admin-page-title">Products.</h1><p className="admin-page-subtitle">Everything customers can browse, add to cart, and buy is managed here.</p></div><Link href="/admin/items/new" className="admin-button"><PackagePlus size={17}/> Add product</Link></header><div className="admin-panel admin-stack admin-section overflow-x-auto px-6"><table className="w-full min-w-[820px] text-left text-sm"><thead className="border-b hairline text-[10px] uppercase tracking-[.15em] opacity-50"><tr><th className="py-5">Product</th><th>Status</th><th>Price</th><th>Published</th><th className="text-right">Actions</th></tr></thead><tbody>{items?.map(item=><tr key={item.id} className="admin-row border-b hairline"><td className="py-6 text-lg font-semibold">{item.title}</td><td><InventoryStatus id={item.id} initialStatus={item.status as ItemStatus}/></td><td className="font-mono">{formatPrice(Number(item.price))}</td><td className="opacity-55">{new Date(item.created_at).toLocaleDateString()}</td><td><div className="flex justify-end gap-4"><Link href={`/admin/items/${item.id}/edit`} className="inline-flex items-center gap-1 font-medium underline underline-offset-4"><Pencil size={13}/> Edit</Link><Link href={`/item/${item.slug}`} className="inline-flex items-center gap-1 underline underline-offset-4">Storefront <ArrowUpRight size={14}/></Link></div></td></tr>)}</tbody></table>{!items?.length&&<div className="py-24 text-center"><PackagePlus className="mx-auto opacity-25" size={38}/><p className="mt-6 text-2xl font-semibold">Your store has no products yet.</p><p className="mt-2 text-sm opacity-55">Upload your first product to make it visible to customers.</p><Link href="/admin/items/new" className="admin-button mt-7"><PackagePlus size={17}/> Add your first product</Link></div>}</div></div></main>;
+}
